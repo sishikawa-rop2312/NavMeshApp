@@ -5,6 +5,10 @@ using UnityEngine;
 public class CharMove : MonoBehaviour
 {
     CharacterController cc;
+    Animator charAnim;
+
+    float pushPower = 2.0f;
+    public bool isAttacking { get; set; }
 
     Vector3 dir = Vector3.zero;
     public float gravity = 20.0f;
@@ -15,6 +19,7 @@ public class CharMove : MonoBehaviour
     void Start()
     {
         cc = GetComponent<CharacterController>();
+        charAnim = GetComponent<Animator>();
     }
 
 
@@ -34,6 +39,9 @@ public class CharMove : MonoBehaviour
             {
                 //ジャンプ開始
                 dir.y = jumpPower;
+
+                // ジャンプアニメーション
+                charAnim.SetTrigger("jump");
             }
         }
         //下方向の重力成分
@@ -47,6 +55,36 @@ public class CharMove : MonoBehaviour
             dir.y = 0;
         }
 
+        // 攻撃アニメーション
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            charAnim.SetTrigger("attack");
+        }
+
+        // Runアニメーション
+        charAnim.SetFloat("speed", acc);
     }
 
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        Rigidbody rb = hit.collider.attachedRigidbody;
+
+        if (rb == null || rb.isKinematic)
+        {
+            return;
+        }
+
+        Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
+        rb.velocity = pushDir * pushPower;
+    }
+
+    public void AttackingStart()
+    {
+        isAttacking = true;
+    }
+
+    public void AttackingEnd()
+    {
+        isAttacking = false;
+    }
 }
