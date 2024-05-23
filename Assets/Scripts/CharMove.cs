@@ -55,10 +55,16 @@ public class CharMove : MonoBehaviour
             dir.y = 0;
         }
 
-        // 攻撃アニメーション
-        if (Input.GetKeyDown(KeyCode.A))
+        // 通常攻撃アニメーション
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             charAnim.SetTrigger("attack");
+        }
+
+        // 必殺攻撃アニメーション
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            charAnim.SetTrigger("spin");
         }
 
         // Runアニメーション
